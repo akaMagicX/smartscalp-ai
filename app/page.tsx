@@ -78,8 +78,8 @@ export default function SuperBApp() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-blue-950 to-zinc-950 text-white p-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-blue-950 to-zinc-950 text-white p-4 pb-20">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -123,64 +123,87 @@ export default function SuperBApp() {
           </div>
         </div>
 
-        {/* Main Chat Area */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          {/* Chat */}
-          <div className="lg:col-span-3 h-[600px] md:h-[700px]">
+        {/* Chat Section - Full Width */}
+        <div className="mb-6">
+          <div className="h-[500px] md:h-[600px]">
             <SuperBChat />
           </div>
+        </div>
 
-          {/* Sidebar */}
-          <div className="space-y-4">
-            {/* Performance */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
-              <h3 className="font-bold text-sm mb-4">Performance</h3>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-zinc-500">Trades</p>
-                  <p className="text-2xl font-bold">0</p>
-                </div>
-                <div>
-                  <p className="text-xs text-zinc-500">Daily P&L</p>
-                  <p className="text-2xl font-bold text-green-400">+$0</p>
-                </div>
-                <div>
-                  <p className="text-xs text-zinc-500">Win Rate</p>
-                  <p className="text-2xl font-bold">-</p>
-                </div>
+        {/* Performance & Positions - Below Chat */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Performance */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+            <h3 className="font-bold text-sm mb-4">Performance</h3>
+            <div className="space-y-3">
+              <div>
+                <p className="text-xs text-zinc-500">Total Trades</p>
+                <p className="text-2xl font-bold">0</p>
+              </div>
+              <div>
+                <p className="text-xs text-zinc-500">Daily P&L</p>
+                <p className="text-2xl font-bold text-green-400">+$0.00</p>
+              </div>
+              <div>
+                <p className="text-xs text-zinc-500">Win Rate</p>
+                <p className="text-2xl font-bold">-</p>
               </div>
             </div>
+          </div>
 
-            {/* Positions */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
-              <h3 className="font-bold text-sm mb-4">Positions</h3>
-              <p className="text-xs text-zinc-400 text-center py-4">No active trades</p>
-            </div>
-
-            {/* Settings */}
-            {showSettings && (
-              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3">
-                <h3 className="font-bold text-sm">Settings</h3>
-                <div>
-                  <label className="text-xs text-zinc-500 block mb-2">Risk Level</label>
-                  <select className="w-full bg-zinc-800 border border-zinc-700 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500">
-                    <option>Low</option>
-                    <option selected>Medium</option>
-                    <option>High</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs text-zinc-500 block mb-2">Max Trade</label>
-                  <input
-                    type="number"
-                    defaultValue="100"
-                    className="w-full bg-zinc-800 border border-zinc-700 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500"
-                  />
-                </div>
-              </div>
-            )}
+          {/* Positions */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+            <h3 className="font-bold text-sm mb-4">Active Positions</h3>
+            <p className="text-xs text-zinc-400 text-center py-8">No active trades yet</p>
           </div>
         </div>
+
+        {/* Settings Modal */}
+        {showSettings && (
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-sm w-full space-y-4">
+              <h2 className="font-bold text-lg">Settings</h2>
+              
+              <div>
+                <label className="text-xs text-zinc-500 block mb-2">Risk Level</label>
+                <select className="w-full bg-zinc-800 border border-zinc-700 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                  <option>Low (2% per trade)</option>
+                  <option selected>Medium (5% per trade)</option>
+                  <option>High (10% per trade)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs text-zinc-500 block mb-2">Max Trade Size (USDC)</label>
+                <input
+                  type="number"
+                  defaultValue="100"
+                  className="w-full bg-zinc-800 border border-zinc-700 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-zinc-500 block mb-2">Auto-Trading</label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" className="w-4 h-4" />
+                  <span className="text-sm">Enable automatic trades</span>
+                </label>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => setShowSettings(false)}
+                  className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white py-2 rounded-lg transition-all"
+                >
+                  Close
+                </button>
+                <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-all">
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Footer */}
         <div className="mt-6 text-center text-xs text-zinc-500">
