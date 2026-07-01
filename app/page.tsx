@@ -1,189 +1,217 @@
 'use client';
 
 import { useState } from 'react';
-import { Wallet, TrendingUp, AlertTriangle, Settings } from 'lucide-react';
+import { Wallet, Settings, BarChart3, LogOut } from 'lucide-react';
+import SuperBLogo from '@/components/SuperBLogo';
+import SuperBChat from '@/components/SuperBChat';
 
-export default function SmartScalpAI() {
+export default function SuperBApp() {
   const [connected, setConnected] = useState(false);
-  const [usdcBalance, setUsdcBalance] = useState(5.23);
-  const [riskLevel, setRiskLevel] = useState<'low' | 'medium' | 'high'>('medium');
-  const [activePositions, setActivePositions] = useState<any[]>([]);
-  const [selectedSignal, setSelectedSignal] = useState<any>(null);
+  const [walletAddress, setWalletAddress] = useState('');
+  const [balance, setBalance] = useState('0.00');
+  const [showSettings, setShowSettings] = useState(false);
+  const [autoTrading, setAutoTrading] = useState(false);
 
-  const mockSignals = [
-    {
-      token: "BRETT",
-      action: "BUY",
-      price: 0.085,
-      confidence: 82,
-      reason: "Strong momentum, good liquidity, no honeypot flags",
-      potential: "+18%",
-      size: 1.5
-    },
-    {
-      token: "DEGEN",
-      action: "SELL",
-      price: 0.0124,
-      confidence: 67,
-      reason: "Profit target reached, minor resistance",
-      potential: "+12%",
-      size: 2.8
-    }
-  ];
-
-  const handleConnect = () => {
+  const handleConnectWallet = async () => {
+    // Simulated wallet connection
+    // In production, use wagmi or ethers.js
     setConnected(true);
-    alert("✅ Wallet connected (Base App simulation)");
+    setWalletAddress('0x1234...5678');
+    setBalance('150.00');
   };
 
-  const executeTrade = (signal: any) => {
-    if (usdcBalance < 1) {
-      alert("Not enough USDC. Minimum $1");
-      return;
-    }
-
-    const tradeAmount = Math.max(1, signal.size);
-    const newBalance = usdcBalance - tradeAmount * 0.8;
-
-    const position = {
-      ...signal,
-      entryPrice: signal.price,
-      amount: tradeAmount,
-      timestamp: new Date().toLocaleTimeString()
-    };
-
-    setActivePositions([position, ...activePositions]);
-    setUsdcBalance(Math.max(0.5, newBalance));
-
-    // Simulate fee on profitable sells
-    if (signal.action === "SELL") {
-      const fee = (tradeAmount * 0.0075).toFixed(4);
-      alert(`✅ Trade executed!\nFee collected: ${fee} USDC → 0xB5DC24ca30f2c9aD9C14415717222e56b98Ce9F3`);
-    } else {
-      alert(`✅ ${signal.action} order placed for ${tradeAmount} USDC of ${signal.token}`);
-    }
+  const handleDisconnect = () => {
+    setConnected(false);
+    setWalletAddress('');
+    setBalance('0.00');
   };
 
-  return (
-    <div className="min-h-screen bg-zinc-950 text-white p-4 pb-20">
-      <div className="max-w-md mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+  if (!connected) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-blue-950 to-zinc-950 text-white flex items-center justify-center p-4">
+        <div className="text-center space-y-8 max-w-md">
+          {/* Logo */}
+          <div className="flex justify-center">
+            <SuperBLogo />
+          </div>
+
+          {/* Title */}
           <div>
-            <h1 className="text-2xl font-bold">SmartScalp AI</h1>
-            <p className="text-zinc-400 text-sm">Base • USDC Scalper</p>
+            <h1 className="text-4xl font-black mb-2">super<span className="text-blue-400">B</span></h1>
+            <p className="text-zinc-400 text-lg">Your AI Trading Assistant</p>
           </div>
-          <div className="flex items-center gap-2">
-            <div className={`w-3 h-3 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`} />
-            <span className="text-sm">{connected ? 'Connected' : 'Disconnected'}</span>
-          </div>
-        </div>
 
-        {/* Wallet Connect */}
-        {!connected ? (
+          {/* Features */}
+          <div className="space-y-3 text-sm text-zinc-300">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center text-blue-400">🤖</div>
+              <span>Powered by Groq AI</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-green-600/20 rounded-lg flex items-center justify-center text-green-400">⚡</div>
+              <span>Autonomous Trading</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-purple-600/20 rounded-lg flex items-center justify-center text-purple-400">💬</div>
+              <span>Natural Chat Interface</span>
+            </div>
+          </div>
+
+          {/* Connect Button */}
           <button
-            onClick={handleConnect}
-            className="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 mb-6"
+            onClick={handleConnectWallet}
+            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-4 rounded-2xl font-bold text-lg transition-all transform hover:scale-105 flex items-center justify-center gap-3 shadow-lg"
           >
-            <Wallet className="w-5 h-5" />
+            <Wallet className="w-6 h-6" />
             Connect Base Wallet
           </button>
-        ) : (
-          <div className="bg-zinc-900 rounded-2xl p-4 mb-6">
-            <div className="flex justify-between">
-              <div>
-                <p className="text-zinc-400">USDC Balance</p>
-                <p className="text-3xl font-mono">${usdcBalance.toFixed(2)}</p>
-              </div>
-              <button className="text-blue-400 text-sm">Refresh</button>
-            </div>
-          </div>
-        )}
 
-        {/* Risk Settings */}
-        <div className="bg-zinc-900 rounded-2xl p-4 mb-6">
-          <div className="flex items-center gap-2 mb-3">
-            <Settings className="w-5 h-5" />
-            <p className="font-medium">Risk Level</p>
-          </div>
-          <div className="flex gap-2">
-            {(['low', 'medium', 'high'] as const).map((level) => (
-              <button
-                key={level}
-                onClick={() => setRiskLevel(level)}
-                className={`flex-1 py-2 rounded-xl text-sm capitalize transition-all ${
-                  riskLevel === level 
-                    ? 'bg-white text-black font-semibold' 
-                    : 'bg-zinc-800 hover:bg-zinc-700'
-                }`}
-              >
-                {level}
-              </button>
-            ))}
+          {/* Info */}
+          <div className="text-xs text-zinc-500 space-y-2">
+            <p>🧪 Testing on Base Sepolia Testnet</p>
+            <p>Get testnet ETH from the faucet first</p>
           </div>
         </div>
+      </div>
+    );
+  }
 
-        {/* AI Signals */}
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-green-400" />
-            AI Trade Signals
-          </h2>
-          
-          {mockSignals.map((signal, i) => (
-            <div 
-              key={i}
-              onClick={() => setSelectedSignal(signal)}
-              className="bg-zinc-900 rounded-2xl p-4 mb-3 cursor-pointer hover:bg-zinc-800 border border-zinc-800"
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-blue-950 to-zinc-950 text-white p-4 pb-20">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <SuperBLogo />
+            <div>
+              <h1 className="text-2xl font-black">super<span className="text-blue-400">B</span></h1>
+              <p className="text-xs text-zinc-400">AI Trading Assistant</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowSettings(!showSettings)}
+              className="p-2 hover:bg-zinc-800 rounded-lg transition-all"
             >
-              <div className="flex justify-between items-start">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xl font-mono font-bold">{signal.token}</span>
-                    <span className={`px-3 py-0.5 rounded-full text-xs font-medium ${
-                      signal.action === 'BUY' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
-                    }`}>
-                      {signal.action}
-                    </span>
-                  </div>
-                  <p className="text-sm text-zinc-400 mt-1">{signal.reason}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-green-400 font-mono">+{signal.potential}</p>
-                  <p className="text-xs text-zinc-500">Conf: {signal.confidence}%</p>
-                </div>
-              </div>
-
-              <button
-                onClick={(e) => { e.stopPropagation(); executeTrade(signal); }}
-                className="mt-4 w-full bg-white text-black py-3 rounded-xl font-semibold hover:bg-zinc-200"
-              >
-                {signal.action} NOW — ${signal.size} USDC
-              </button>
-            </div>
-          ))}
+              <Settings className="w-5 h-5 text-zinc-400" />
+            </button>
+            <button
+              onClick={handleDisconnect}
+              className="p-2 hover:bg-zinc-800 rounded-lg transition-all"
+            >
+              <LogOut className="w-5 h-5 text-zinc-400" />
+            </button>
+          </div>
         </div>
 
-        {/* Active Positions */}
-        {activePositions.length > 0 && (
-          <div>
-            <h2 className="text-lg font-semibold mb-3">Active Positions</h2>
-            {activePositions.map((pos, i) => (
-              <div key={i} className="bg-zinc-900 rounded-2xl p-4 mb-3">
-                <div className="flex justify-between">
-                  <div>
-                    <span className="font-mono">{pos.token}</span>
-                    <span className="ml-2 text-xs text-zinc-500">{pos.timestamp}</span>
-                  </div>
-                  <div className="text-green-400 text-sm">Open</div>
+        {/* Connected Status & Balance */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {/* Wallet Info */}
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-4">
+            <p className="text-xs text-zinc-500 mb-1">Connected Wallet</p>
+            <p className="font-mono text-sm text-green-400">{walletAddress}</p>
+            <p className="text-xs text-zinc-500 mt-2">Base Sepolia Testnet</p>
+          </div>
+
+          {/* Balance */}
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-4">
+            <p className="text-xs text-zinc-500 mb-1">superB Balance</p>
+            <p className="text-2xl font-bold text-blue-400">${balance}</p>
+            <p className="text-xs text-zinc-500 mt-2">USDC</p>
+          </div>
+
+          {/* Status */}
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-4">
+            <p className="text-xs text-zinc-500 mb-1">Trading Status</p>
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${autoTrading ? 'bg-green-500' : 'bg-zinc-600'}`} />
+              <p className="font-semibold">{autoTrading ? 'Active' : 'Inactive'}</p>
+            </div>
+            <p className="text-xs text-zinc-500 mt-2">Auto-Trading</p>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Chat Interface */}
+          <div className="lg:col-span-2">
+            <SuperBChat />
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-4">
+            {/* Performance */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+              <div className="flex items-center gap-2 mb-4">
+                <BarChart3 className="w-5 h-5 text-green-400" />
+                <h3 className="font-semibold">Performance</h3>
+              </div>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-xs text-zinc-500">Total Trades</p>
+                  <p className="text-2xl font-bold text-blue-400">0</p>
+                </div>
+                <div>
+                  <p className="text-xs text-zinc-500">Daily P&L</p>
+                  <p className="text-2xl font-bold text-green-400">+$0.00</p>
+                </div>
+                <div>
+                  <p className="text-xs text-zinc-500">Win Rate</p>
+                  <p className="text-2xl font-bold text-yellow-400">0%</p>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+            </div>
 
-        <div className="text-center text-xs text-zinc-500 mt-8">
-          0.75% fee on profitable sells • Test with $1+ USDC
+            {/* Quick Stats */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+              <h3 className="font-semibold mb-3">Active Positions</h3>
+              <p className="text-sm text-zinc-400 text-center py-8">No active positions</p>
+            </div>
+
+            {/* Settings Panel */}
+            {showSettings && (
+              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4">
+                <h3 className="font-semibold">Settings</h3>
+                
+                <div>
+                  <label className="text-xs text-zinc-500 block mb-2">Auto-Trading</label>
+                  <button
+                    onClick={() => setAutoTrading(!autoTrading)}
+                    className={`w-full py-2 rounded-lg font-semibold transition-all ${
+                      autoTrading
+                        ? 'bg-green-600 hover:bg-green-700'
+                        : 'bg-zinc-800 hover:bg-zinc-700'
+                    }`}
+                  >
+                    {autoTrading ? 'Turn OFF' : 'Turn ON'}
+                  </button>
+                </div>
+
+                <div>
+                  <label className="text-xs text-zinc-500 block mb-2">Max Trade Size</label>
+                  <input
+                    type="number"
+                    defaultValue="100"
+                    className="w-full bg-zinc-800 border border-zinc-700 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-zinc-500 block mb-2">Risk Level</label>
+                  <select className="w-full bg-zinc-800 border border-zinc-700 text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    <option>Low</option>
+                    <option selected>Medium</option>
+                    <option>High</option>
+                  </select>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer Info */}
+        <div className="mt-8 p-4 bg-blue-900/20 border border-blue-500/20 rounded-2xl text-center text-xs text-blue-300">
+          <p>💡 superB is learning and improving. Chat naturally to make trades.</p>
         </div>
       </div>
     </div>
