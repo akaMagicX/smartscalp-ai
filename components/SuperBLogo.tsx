@@ -15,7 +15,7 @@ export default function SuperBLogo() {
 
       {/* Superman B Logo */}
       <g transform="translate(32, 32)">
-        {/* B shape with superhero flair */}
+        {/* B shape */}
         <path
           d="M -8 -12 L -2 -12 Q 4 -12 4 -6 Q 4 -2 -2 -2 L -8 -2 L -8 -12 Z"
           fill="#fff"
@@ -33,7 +33,7 @@ export default function SuperBLogo() {
         <ellipse cx="-12" cy="0" rx="3" ry="8" fill="#FF4444" opacity="0.7" />
         <ellipse cx="10" cy="0" rx="3" ry="8" fill="#FF4444" opacity="0.7" />
 
-        {/* Shine effect */}
+        {/* Shine */}
         <circle cx="-2" cy="-8" r="1.5" fill="#FFD700" opacity="0.8" />
       </g>
 
